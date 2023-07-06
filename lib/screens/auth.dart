@@ -19,6 +19,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final formKey = GlobalKey<FormState>();
   var _enteredEmail = "";
   var _enteredPassword = "";
+  var _enteredUsername = "";
   File? _selectedImage;
   var _isAuthenticating = false;
 
@@ -49,7 +50,7 @@ class _AuthScreenState extends State<AuthScreen> {
             .collection('users')
             .doc(userCredentials.user!.uid)
             .set({
-          'username': 'which has to done',
+          'username': _enteredUsername,
           'email': _enteredEmail,
           'image_url': imageURL,
         });
@@ -103,6 +104,24 @@ class _AuthScreenState extends State<AuthScreen> {
                             UserImagePicker(
                               onPickImage: (pickedImage) {
                                 _selectedImage = pickedImage;
+                              },
+                            ),
+                          if (!_isLogin)
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Username",
+                              ),
+                              enableSuggestions: false,
+                              validator: (value) {
+                                if (value == null ||
+                                    value.isEmpty ||
+                                    value.trim().length <= 3) {
+                                  return "Please enter atleast 3 characters.";
+                                }
+                                return null;
+                              },
+                              onSaved: (value) {
+                                _enteredUsername = value!;
                               },
                             ),
                           TextFormField(
